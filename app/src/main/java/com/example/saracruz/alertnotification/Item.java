@@ -18,6 +18,7 @@ public class Item {
     }
 
 
+
     public int getTipo() {
         return tipo;
     }
@@ -51,6 +52,5 @@ public class Item {
         this.hour = hour;
     }
 
+    }
 
-
- }

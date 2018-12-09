@@ -1,98 +1,85 @@
 package com.example.saracruz.alertnotification;
 
-import android.graphics.Paint;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Modelo
     List<Item> items;
-    private RecyclerView notificaciones_view;
-    private Adapter adapter;
 
+    // Referencias a objetos de la pantalla
+    private RecyclerView item_list_view;
+    private Button btn_add;
 
+    // Adaptador
+    private RecyclerView.Adapter adapter;
+
+    private void saveItemList() {
+        try {
+            FileOutputStream outputStream = openFileOutput("items_noti.txt", MODE_PRIVATE);
+            //for (int i = 0; i < items.size(); i++) {
+            for (Item item : items) {
+                String line = String.format("%s;%b\n", item.getTitle(), item.getDay(),item.getHour(),item.getTipo());
+                outputStream.write(line.getBytes());
+            }
+        } catch (FileNotFoundException e) {
+            Toast.makeText(this, "No se ha podido abrir el fichero", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            Toast.makeText(this, "No se ha podido escribir", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void readItemList() {
+        try {
+            FileInputStream inputStream = openFileInput("items_noti.txt");
+            Scanner scanner = new Scanner(inputStream);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(";");
+                items.add(new Item(parts[0], parts[1], parts[2]); // esto no esta claro ni acabado
+            }
+        } catch (FileNotFoundException e) {
+            Log.e("ShoppingList", "No he podido abrir el fichero");
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveItemList();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setTitle("QueMeAvisesJoder");
 
-        // Meto un comentario
-        // 2o comentario
-
+        // Creamos el modelo y leemos los ítems de fichero
         items = new ArrayList<>();
-        items.add(new Item("Cumpleaños Amante", "13/13/2018", "13:13", 0));
-        items.add(new Item("Cumpleaños del Jefe", "06/06/2018", "06:06", 0));
+        readItemList();
 
-        notificaciones_view = findViewById(R.id.notificaciones_view);
-        // Cinfiguramos el RecyclerView con un Layout Manager y un Adaprador
-        notificaciones_view.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new Adapter();
-        notificaciones_view.setAdapter(adapter);
+        // Obtenemos referencias a objetos de la pantalla
+        item_list_view = findViewById(R.id.lista_notificadores);
+        btn_add = findViewById(R.id.nueva_actividad);
 
+        // Detectamos los clicks en el botón de añadir
+        btn_add.setOnClickListener(new View.OnClickListener() {
 
-    }
-
-    class ViewHolder extends RecyclerView.ViewHolder{
-        TextView titlenoti_view;
-        TextView daynoti_view;
-        TextView hournoti_view;
-        ImageView iconoti_view;
-
-
-
-        public ViewHolder (View itemView){
-            super(itemView);
-
-            this.titlenoti_view = itemView.findViewById(R.id.titlenoti_view);
-            this.daynoti_view = itemView.findViewById(R.id.daynoti_view);
-            this.hournoti_view = itemView.findViewById(R.id.hournoti_view);
-            this.iconoti_view = itemView.findViewById(R.id.iconoti_view);
-
-
-        }
-    }
-
-    class Adapter extends RecyclerView.Adapter<ViewHolder>{
-        @Override public int getItemCount() {return items.size();}
-
-
-        @NonNull
-        @Override
-
-        public ViewHolder onCreateViewHolder (@NonNull ViewGroup parent, int ViewType){
-            // Creamos un item de la pantalla a partid del layout
-            View itemView = getLayoutInflater().
-                    inflate(R.layout.item_layout,parent,false);
-            // Creamos (y retornamos) el ViewHolder asociado
-            return new ViewHolder(itemView);
-
-        }
-
-        @Override
-
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position){
-            // Vamos al modelo y obtenemos el valor en la posición que nos pasan
-            Item item = items.get(position);
-            holder.titlenoti_view.setText(item.getTitle());
-            holder.daynoti_view.setText(item.getDay());
-            holder.hournoti_view.setText(item.getHour());
-
-
-
-        }
-
+        });
 
     }
 }

@@ -30,7 +30,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="Lunes 6 de Diciembre 2018 |"
+        android:text="Lunes 6 de Diciembre 2018 "
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titlenoti_view" />

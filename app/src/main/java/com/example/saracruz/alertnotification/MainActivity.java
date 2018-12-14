@@ -20,7 +20,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -29,10 +31,9 @@ public class MainActivity extends AppCompatActivity {
     List<Item> items;
     private RecyclerView notificaciones_view;
     private Adapter adapter;
-
     public static final int EDIT_NOTIFICATION = 0;
 
-
+    /*
     private void saveItemList() {
         try {
             FileOutputStream outputStream = openFileOutput("items_noti.txt", MODE_PRIVATE);
@@ -60,11 +61,12 @@ public class MainActivity extends AppCompatActivity {
             Log.e("ShoppingList", "No he podido abrir el fichero");
         }
     }
+    */
 
     @Override
     protected void onStop() {
         super.onStop();
-        saveItemList();
+        // saveItemList();
     }
 
     @Override
@@ -78,10 +80,9 @@ public class MainActivity extends AppCompatActivity {
         // 2o comentario
 
         items = new ArrayList<>();
-        readItemList();
-
-        // items.add(new Item("Cumpleaños Amante", "13/13/2018", "13:13", 0));
-        // items.add(new Item("Cumpleaños del Jefe", "06/06/2018", "06:06", 0));
+        // readItemList();
+        items.add(new Item("Cumpleaños Amante", new Date(), 0));
+        items.add(new Item("Cumpleaños del Jefe", new Date(), 0));
 
         notificaciones_view = findViewById(R.id.notificaciones_view);
         // Cinfiguramos el RecyclerView con un Layout Manager y un Adaptador
@@ -91,16 +92,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickAdd(View view) {
-         Intent intent = new Intent(this, AddActivity.class);
-        //intent.putExtra("titulo", title);
-       // intent.putExtra("descripcion", descripcion);
-       // intent.putExtra("fecha", fecha);
-       // intent.putExtra("hora", hora);
-        startActivityForResult(intent,EDIT_NOTIFICATION);
-
-
+        Intent intent = new Intent(this, AddActivity.class);
+        startActivityForResult(intent, EDIT_NOTIFICATION);
     }
 
+    public void onClickItem(int pos ) {
+        Toast.makeText(this, "Has clicado el item " + pos, Toast.LENGTH_SHORT).show();
+    }
+
+    public void onActivityResult ( int requestCode, int resultCode, Intent data){
+        switch(requestCode){
+            case EDIT_NOTIFICATION:
+                if(resultCode == RESULT_OK){
+                    String titulo = data.getStringExtra("titulo");
+                    Date date = (Date) data.getSerializableExtra("fecha");
+                    items.add(new Item(titulo, date, 0));
+                    adapter.notifyItemInserted(items.size()-1);
+                }
+        }
+    }
 
     class ViewHolder extends RecyclerView.ViewHolder{
         TextView titlenoti_view;
@@ -108,17 +118,19 @@ public class MainActivity extends AppCompatActivity {
         TextView hournoti_view;
         ImageView iconoti_view;
 
-
-
         public ViewHolder (View itemView){
             super(itemView);
-
             this.titlenoti_view = itemView.findViewById(R.id.titlenoti_view);
             this.daynoti_view = itemView.findViewById(R.id.daynoti_view);
             this.hournoti_view = itemView.findViewById(R.id.hournoti_view);
             this.iconoti_view = itemView.findViewById(R.id.iconoti_view);
-
-
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    onClickItem(pos);
+                }
+            });
         }
     }
 
@@ -144,16 +156,17 @@ public class MainActivity extends AppCompatActivity {
             // Vamos al modelo y obtenemos el valor en la posición que nos pasan
             Item item = items.get(position);
             holder.titlenoti_view.setText(item.getTitle());
-            holder.daynoti_view.setText(item.getDay());
-            holder.hournoti_view.setText(item.getHour());
 
+            SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
+            String fecha = formatDate.format(item.getDate());
+            holder.daynoti_view.setText(fecha);
 
-
+            SimpleDateFormat formatHour = new SimpleDateFormat("HH:mm");
+            String hora = formatHour.format(item.getDate());
+            holder.hournoti_view.setText(hora);
         }
-
-
-
     }
+
 
 
 }

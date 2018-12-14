@@ -1,22 +1,20 @@
 package com.example.saracruz.alertnotification;
 
 
+import java.util.Date;
+
 public class Item {
     private String title;
-    private String day;
-    private String hour;
-
+    private Date date;
 
     private int tipo;
 
 
-    public Item(String title, String day, String hour, int image) {
+    public Item(String title, Date date, int image) {
         this.title = title;
-        this.day = day;
-        this.hour = hour;
         this.tipo = image;
+        this.date = date;
     }
-
 
 
     public int getTipo() {
@@ -36,21 +34,12 @@ public class Item {
         this.title = title;
     }
 
-    public String getDay() {
-        return day;
+    public Date getDate() {
+        return date;
     }
 
-    public void setDay(String day) {
-        this.day = day;
+    public void setDate(Date date) {
+        this.date = date;
     }
-
-    public String getHour() {
-        return hour;
-    }
-
-    public void setHour(String hour) {
-        this.hour = hour;
-    }
-
-    }
+}
 

@@ -9,18 +9,36 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 public class AddActivity extends AppCompatActivity {
+
+    private EditText titulo_noti;
+    private EditText descripcio_noti;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_layout);
 
+        setTitle("QueMeAvisesJoder");
+
         Intent intent = getIntent();
+        if(intent != null) {
+
+            String titulo = intent.getStringExtra("titulo");
+            String descripcion = intent.getStringExtra("descripcion");
+            titulo_noti = findViewById(R.id.titulo_noti);
+            titulo_noti.setText(titulo);
+            descripcio_noti = findViewById(R.id.descripcio_noti);
+            descripcio_noti.setText(descripcion);
+        }
     }
+
+
+
 
 
 
@@ -47,5 +65,15 @@ public class AddActivity extends AppCompatActivity {
         }, 13, 18,true);
 
         dialog.show();
+    }
+
+    public void onClickvolver(View view) {
+        String titulo_editado = titulo_noti.getText().toString();
+        String descripcion_editada = descripcio_noti.getText().toString();
+        Intent data = new Intent();
+        data.putExtra("titulo",titulo_editado);
+        data.putExtra("descripcion",descripcion_editada);
+        setResult(RESULT_OK,data);
+        finish();
     }
 }

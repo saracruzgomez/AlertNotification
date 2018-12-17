@@ -5,18 +5,24 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+
 public class AddActivity extends AppCompatActivity {
 
     private EditText titulo_noti;
     private EditText descripcio_noti;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,10 +42,6 @@ public class AddActivity extends AppCompatActivity {
             descripcio_noti.setText(descripcion);
         }
     }
-
-
-
-
 
 
     public void onClickfecha(View view) {
@@ -70,10 +72,14 @@ public class AddActivity extends AppCompatActivity {
     public void onClickvolver(View view) {
         String titulo_editado = titulo_noti.getText().toString();
         String descripcion_editada = descripcio_noti.getText().toString();
+
         Intent data = new Intent();
+
         data.putExtra("titulo",titulo_editado);
         data.putExtra("descripcion",descripcion_editada);
         setResult(RESULT_OK,data);
         finish();
     }
+
+
 }

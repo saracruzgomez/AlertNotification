@@ -98,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickItem(int pos ) {
         Toast.makeText(this, "Has clicado el item " + pos, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, AddActivity.class);
+        startActivityForResult(intent, EDIT_NOTIFICATION);
     }
 
     public void onActivityResult ( int requestCode, int resultCode, Intent data){

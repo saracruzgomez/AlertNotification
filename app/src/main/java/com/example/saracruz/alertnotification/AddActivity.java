@@ -17,11 +17,14 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class AddActivity extends AppCompatActivity {
 
     private EditText titulo_noti;
     private EditText descripcio_noti;
+    //private Date date;
 
 
     @Override
@@ -33,13 +36,18 @@ public class AddActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if(intent != null) {
-
             String titulo = intent.getStringExtra("titulo");
             String descripcion = intent.getStringExtra("descripcion");
+            //Date date = (Date) intent.getSerializableExtra("fechahora"); Pídele ayuda al profe para el tema de la modificación de la fecha y la hora
+
+
+
             titulo_noti = findViewById(R.id.titulo_noti);
             titulo_noti.setText(titulo);
             descripcio_noti = findViewById(R.id.descripcio_noti);
             descripcio_noti.setText(descripcion);
+            //date = findViewById(R.id.fecha);
+            //date.setDate(date);
         }
     }
 
@@ -72,11 +80,13 @@ public class AddActivity extends AppCompatActivity {
     public void onClickvolver(View view) {
         String titulo_editado = titulo_noti.getText().toString();
         String descripcion_editada = descripcio_noti.getText().toString();
+        //Date fechahora = date.getDate().toString(); No estoy segura dde como pasarlo a String
 
         Intent data = new Intent();
 
         data.putExtra("titulo",titulo_editado);
         data.putExtra("descripcion",descripcion_editada);
+        //data.putExtra("fechahora", fechahora);
         setResult(RESULT_OK,data);
         finish();
     }

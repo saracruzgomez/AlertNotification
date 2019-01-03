@@ -37,9 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private Adapter adapter;
     public static final int EDIT_NOTIFICATION = 0;
     public static final int NEW_NOTIFICATION = 1;
-    private TextView titulo;
-    private TextView dia;
-    private TextView hour;
 
 
 

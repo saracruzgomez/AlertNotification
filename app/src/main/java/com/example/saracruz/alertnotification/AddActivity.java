@@ -38,9 +38,7 @@ public class AddActivity extends AppCompatActivity {
     private TextView hora_view;
     //private Date editfecha;
     private Date fecha;
-
-
-
+    private int pos_i;
 
 
     @Override
@@ -55,6 +53,7 @@ public class AddActivity extends AppCompatActivity {
             String titulo = intent.getStringExtra("titulo");
             String descripcion = intent.getStringExtra("descripcion");
             fecha = (Date) intent.getSerializableExtra("fecha");
+            int pos = intent.getIntExtra("posicion",0);
             //String tipo_noti = intent.getStringExtra("tipoNoti");
 
 
@@ -67,6 +66,7 @@ public class AddActivity extends AppCompatActivity {
             fecha_view = findViewById(R.id.fechaview);
             hora_view = findViewById(R.id.horaview);
 
+            pos_i=pos;
         }
 
 
@@ -136,11 +136,14 @@ public class AddActivity extends AppCompatActivity {
         String titulo_editado = this.titulo_noti.getText().toString();
         String descripcion_editada = this.descripcio_noti.getText().toString();
         Date fecha_editada = this.fecha;
+        int pos = this.pos_i;
+
         Intent data = new Intent();
 
         data.putExtra("titulo",titulo_editado);
         data.putExtra("descripcion",descripcion_editada);
         data.putExtra("fecha",fecha_editada);
+        data.putExtra("posicion",pos);
         setResult(RESULT_OK,data);
         finish();
     }

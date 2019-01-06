@@ -1,5 +1,6 @@
 package com.example.saracruz.alertnotification;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
@@ -17,6 +18,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -26,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -116,7 +121,9 @@ public class MainActivity extends AppCompatActivity {
         notificaciones_view.setAdapter(adapter);
 
         textview = findViewById(R.id.StateView);
+
     }
+
 
     public void onClickAdd(View view) {
         Intent intent = new Intent(this, AddActivity.class);
@@ -138,7 +145,22 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, EDIT_NOTIFICATION);
     }
 
+    public void onClickItemR(int pos ) {
+        Toast.makeText(this, "Has clicado el item " + pos, Toast.LENGTH_SHORT).show();
+        Item item = items.get(pos);
+        adapter.notifyItemRemoved(pos);
+    }
 
+    @SuppressLint("RestrictedApi")
+    public void setSupportActionBar(){
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        if(actionBar!= null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDefaultDisplayHomeAsUpEnabled(true);
+
+        }
+
+    }
 
     public void onActivityResult ( int requestCode, int resultCode, Intent data){
         switch(requestCode){
@@ -151,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
                     items.add(new Item(titulo,fecha, 0, descr));
                     adapter.notifyItemInserted(items.size()-1);
                     }
+
                 break;
 
             case EDIT_NOTIFICATION:
@@ -167,16 +190,21 @@ public class MainActivity extends AppCompatActivity {
                     items.set(pos,new Item(title,fecha,0,descr));
                     adapter.notifyItemChanged(pos);
                 }
+
+                else {
+                    int pos = data.getIntExtra("posicion",0);
+                    items.remove(pos);
+                    adapter.notifyItemRemoved(pos);
+                }
                 break;
+
+
 
 
         }
 
     }
 
-    public void processTimePickerResult(int hourOfDay, int minute) {
-
-    }
 
     class ViewHolder extends RecyclerView.ViewHolder{
         TextView titlenoti_view;
@@ -184,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
         TextView hournoti_view;
         ImageView iconoti_view;
 
-        public ViewHolder (View itemView){
+        public ViewHolder (final View itemView){
             super(itemView);
             this.titlenoti_view = itemView.findViewById(R.id.titlenoti_view);
             this.daynoti_view = itemView.findViewById(R.id.daynoti_view);
@@ -195,9 +223,13 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
                     onClickItem(pos);
+
                 }
             });
+
+
         }
+
     }
 
     class Adapter extends RecyclerView.Adapter<ViewHolder>{
@@ -236,6 +268,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+
     }
 
+
 }
+

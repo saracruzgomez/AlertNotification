@@ -17,6 +17,9 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -204,6 +207,31 @@ public class AddActivity extends AppCompatActivity {
         alarmManager.cancel(pendingIntent);
         stateview.setText("Alarm canceled");
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.option, menu);
+        return true;
+    }
 
+
+    public boolean onOptionsItemSelected (MenuItem item){
+        switch (item.getItemId()){
+            case R.id.delete:
+                deleteItem();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    private void deleteItem() {
+        Boolean eliminar = true;
+        Intent data = new Intent();
+        data.putExtra("eliminar",eliminar);
+        setResult((-RESULT_OK),data);
+        finish();
+    }
 
 }

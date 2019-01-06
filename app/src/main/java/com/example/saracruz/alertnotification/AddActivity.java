@@ -227,9 +227,9 @@ public class AddActivity extends AppCompatActivity {
     }
 
     private void deleteItem() {
-        Boolean eliminar = true;
+        int pos = this.pos_i;
         Intent data = new Intent();
-        data.putExtra("eliminar",eliminar);
+        data.putExtra("posicion",pos);
         setResult((-RESULT_OK),data);
         finish();
     }

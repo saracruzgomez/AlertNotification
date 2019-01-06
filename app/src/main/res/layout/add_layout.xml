@@ -32,6 +32,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:background="#dfdfdf"
         android:onClick="onClickfecha"
         android:text="Fecha"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,6 +45,7 @@
         android:layout_marginEnd="18dp"
         android:layout_marginRight="18dp"
         android:layout_marginTop="8dp"
+        android:background="#dfdfdf"
         android:onClick="onClickhora"
         android:text="Hora"
         app:layout_constraintEnd_toEndOf="parent"
@@ -67,7 +69,7 @@
 
     <EditText
         android:id="@+id/descripcio_noti"
-        android:layout_width="0dp"
+        android:layout_width="354dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
@@ -104,5 +106,54 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/hora"
         app:layout_constraintTop_toBottomOf="@+id/hora" />
+
+    <Button
+        android:id="@+id/btn_set"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:background="@android:color/holo_green_light"
+        android:text="ACTIVAR"
+        android:onClick="onClickActivar"
+        android:textColor="@android:color/background_light"
+        app:layout_constraintBottom_toTopOf="@+id/btn_cancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:background="@android:color/holo_red_dark"
+        android:text="DESACTIVAR"
+        android:onClick="onClickDesactivar"
+        android:textColor="@android:color/background_light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/StateView"
+        android:layout_width="85dp"
+        android:layout_height="28dp"
+        android:layout_marginBottom="56dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Deactivada"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/btn_set"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

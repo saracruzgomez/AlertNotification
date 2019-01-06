@@ -1,17 +1,22 @@
 package com.example.saracruz.alertnotification;
 
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.support.v4.app.DialogFragment;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,12 +27,14 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.text.DateFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.time.Clock;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
 
 
 public class AddActivity extends AppCompatActivity {
@@ -39,7 +46,7 @@ public class AddActivity extends AppCompatActivity {
     //private Date editfecha;
     private Date fecha;
     private int pos_i;
-
+    private TextView stateview;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,6 +86,17 @@ public class AddActivity extends AppCompatActivity {
             actionBar.setTitle("AddNotification");
         }
     }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void onClickActivar(View view){
+        startalarm(fecha);
+        stateview.setText("Activada");
+    }
+
+    public void onClickDesactivar(View view){
+        cancelAlarm();
+        stateview.setText("Desactivada");
+    }
+
     public void onClickfecha(View view) {
 
         DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
@@ -112,6 +130,7 @@ public class AddActivity extends AppCompatActivity {
         dialog.show();
 
 
+
     }
 
     private void setHour(int hourOfDay, int minute) {
@@ -120,6 +139,7 @@ public class AddActivity extends AppCompatActivity {
         calendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
         calendar.set(Calendar.MINUTE,minute);
         fecha=calendar.getTime();
+
     }
 
     private void setDay(int dayOfMonth, int month, int year) {
@@ -129,6 +149,7 @@ public class AddActivity extends AppCompatActivity {
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.YEAR, year);
         fecha = calendar.getTime();
+
     }
 
     public void onClickvolver(View view) {
@@ -146,6 +167,42 @@ public class AddActivity extends AppCompatActivity {
         data.putExtra("posicion",pos);
         setResult(RESULT_OK,data);
         finish();
+    }
+
+
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+
+
+    private void updateTimeText(Calendar c){
+        String timeText = "Alarm set for: ";
+        timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
+
+        stateview.setText(timeText);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void startalarm(Date fecha){
+
+        Calendar c = new GregorianCalendar();
+        c.setTime(fecha);
+        Intent intent = new Intent(this,AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 10,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
+
+
+    }
+
+    private  void cancelAlarm(){
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this,AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1,intent,0);
+
+        alarmManager.cancel(pendingIntent);
+        stateview.setText("Alarm canceled");
     }
 
 

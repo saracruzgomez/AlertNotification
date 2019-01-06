@@ -1,9 +1,17 @@
 package com.example.saracruz.alertnotification;
 
+import android.annotation.TargetApi;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.DialogFragment;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.os.Build;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +24,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
@@ -23,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.BreakIterator;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private Adapter adapter;
     public static final int EDIT_NOTIFICATION = 0;
     public static final int NEW_NOTIFICATION = 1;
-
+    private Button btn_cancel;
+    private TextView textview;
 
 
 
@@ -92,24 +103,19 @@ public class MainActivity extends AppCompatActivity {
         // Meto un comentario
         // 2o comentario
 
-
-
-
-
-
-
-
         items = new ArrayList<>();
         //readItemList();
         items.add(new Item("Sara",new Date(),0,"Necesito un baño caliente"));
         items.add(new Item("Joan",new Date(),0,"Necesita un baño de agua fría"));
 
-
         notificaciones_view = findViewById(R.id.notificaciones_view);
-        // Cinfiguramos el RecyclerView con un Layout Manager y un Adaptador
+
+        // Configuramos el RecyclerView con un Layout Manager y un Adaptador
         notificaciones_view.setLayoutManager(new LinearLayoutManager(this));
         adapter = new Adapter();
         notificaciones_view.setAdapter(adapter);
+
+        textview = findViewById(R.id.StateView);
     }
 
     public void onClickAdd(View view) {
@@ -132,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, EDIT_NOTIFICATION);
     }
 
+
+
     public void onActivityResult ( int requestCode, int resultCode, Intent data){
         switch(requestCode){
             case NEW_NOTIFICATION:
@@ -142,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
                     items.add(new Item(titulo,fecha, 0, descr));
                     adapter.notifyItemInserted(items.size()-1);
-                }
+                    }
                 break;
 
             case EDIT_NOTIFICATION:
@@ -163,6 +171,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+
+    }
+
+    public void processTimePickerResult(int hourOfDay, int minute) {
 
     }
 
@@ -209,21 +221,21 @@ public class MainActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position){
             // Vamos al modelo y obtenemos el valor en la posición que nos pasan
             Item item = items.get(position);
+            Date fecha = item.getDay();
 
             holder.titlenoti_view.setText(item.getTitle());
 
             SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
-            String date = formatDate.format(item.getDay());
+            String date = formatDate.format(fecha);
             holder.daynoti_view.setText(date);
 
             SimpleDateFormat formatHour = new SimpleDateFormat("HH:mm");
-            String hora = formatHour.format(item.getDay());
+            String hora = formatHour.format(fecha);
             holder.hournoti_view.setText(hora);
+
 
 
         }
     }
-
-
 
 }

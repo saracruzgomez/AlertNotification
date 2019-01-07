@@ -230,7 +230,7 @@ public class AddActivity extends AppCompatActivity {
         int pos = this.pos_i;
         Intent data = new Intent();
         data.putExtra("posicion",pos);
-        setResult((-RESULT_OK),data);
+        setResult(RESULT_OK*2,data);
         finish();
     }
 

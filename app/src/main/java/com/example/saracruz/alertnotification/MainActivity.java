@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
@@ -65,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
             FileOutputStream outputStream = openFileOutput("items_noti.txt", MODE_PRIVATE);
             //for (int i = 0; i < items.size(); i++) {
             for (Item item : items) {
-                //String line = String.format("%s;%s;%s;%s\n", item.getTitle(), item.getDay(), item.getTipo());
-                //outputStream.write(line.getBytes());
+                String line = String.format("%s,%D,%s,%s", item.getTitle(), item.getDay(), item.getTipo(),item.getDescr());
+                outputStream.write(line.getBytes());
             }
         } catch (FileNotFoundException e) {
             Toast.makeText(this, "No se ha podido abrir el fichero", Toast.LENGTH_SHORT).show();
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "No se ha podido escribir", Toast.LENGTH_SHORT).show();
         }
     }
-    /*
+
     private void readItemList() {
         try {
             FileInputStream inputStream = openFileInput("items_noti.txt");
@@ -85,10 +86,11 @@ public class MainActivity extends AppCompatActivity {
                 items.add(new Item(parts[0], new Date(parts[1]), Integer.valueOf(parts[2]), parts[3])); //Te lo he acabado
             }
         } catch (FileNotFoundException e) {
-            Log.e("noti_list", "No he podido abrir el fichero");
+            Log.e("AlertNotification", "No he podido abrir el fichero");
         }
     }
-    */
+
+
 
 
     @Override
@@ -112,7 +114,14 @@ public class MainActivity extends AppCompatActivity {
         //readItemList();
         items.add(new Item("Sara",new Date(),0,"Necesito un baño caliente"));
         items.add(new Item("Joan",new Date(),0,"Necesita un baño de agua fría"));
-
+        items.add(new Item("Joan pepe",new Date(),0,"Necesita un baño de agua fría"));
+        items.add(new Item("Caducidad",new Date(),0,"Necesita un baño de agua fría"));
+        items.add(new Item("Joan",new Date(),0,"Necesita un baño de agua fría"));
+        items.add(new Item("Reutilizar",new Date(),0,"Necesita un baño de agua fría"));
+        items.add(new Item("Joan",new Date(),0,"Necesita un baño de agua fría"));
+        items.add(new Item("Sara",new Date(),0,"Necesito un baño caliente"));
+        items.add(new Item("Joan",new Date(),0,"Necesita un baño de agua fría"));
+        items.add(new Item("Joan pepe",new Date(),0,"Necesita un baño de agua fría"));
         notificaciones_view = findViewById(R.id.notificaciones_view);
 
         // Configuramos el RecyclerView con un Layout Manager y un Adaptador
@@ -177,30 +186,26 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case EDIT_NOTIFICATION:
-                if(resultCode == RESULT_OK){
 
+                    if(resultCode == RESULT_OK){
 
-                    // Refrescamos la pantalla
+                     // Refrescamos la pantalla
 
-                    String title = data.getStringExtra("titulo");
-                    Date fecha = (Date) data.getSerializableExtra("fecha");
-                    String descr =  data.getStringExtra("descripcion");
-                    int pos = data.getIntExtra("posicion",0);
+                     String title = data.getStringExtra("titulo");
+                     Date fecha = (Date) data.getSerializableExtra("fecha");
+                     String descr =  data.getStringExtra("descripcion");
+                     int pos = data.getIntExtra("posicion",0);
 
                     items.set(pos,new Item(title,fecha,0,descr));
                     adapter.notifyItemChanged(pos);
                 }
 
-                else {
+                else if(resultCode == RESULT_OK*2) {
                     int pos = data.getIntExtra("posicion",0);
                     items.remove(pos);
                     adapter.notifyItemRemoved(pos);
                 }
                 break;
-
-
-
-
         }
 
     }

@@ -1,49 +1,28 @@
 package com.example.saracruz.alertnotification;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.AlarmManager;
-import android.app.DatePickerDialog;
-import android.app.DialogFragment;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
-import android.os.Build;
-import android.os.SystemClock;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.BreakIterator;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
@@ -60,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+    //le indicamos donde guardará y de donde leerá las notificaciones
     private void saveItemList() {
         try {
             FileOutputStream outputStream = openFileOutput("items_noti.txt", MODE_PRIVATE);
@@ -83,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(";");
-                items.add(new Item(parts[0], new Date(parts[1]), Integer.valueOf(parts[2]), parts[3])); //Te lo he acabado
+                items.add(new Item(parts[0], new Date(parts[1]), Integer.valueOf(parts[2]), parts[3]));
             }
         } catch (FileNotFoundException e) {
             Log.e("AlertNotification", "No he podido abrir el fichero");
@@ -96,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        //saveItemList();
+        //  saveItemList();
     }
 
     @Override
@@ -107,11 +86,13 @@ public class MainActivity extends AppCompatActivity {
 
         setTitle("QueMeAvisesJoder");
 
-        // Meto un comentario
-        // 2o comentario
+
+
+
 
         items = new ArrayList<>();
         //readItemList();
+        //Rellenamos la lista de notificaciones con valores iniciales
         items.add(new Item("Sara",new Date(),0,"Necesito un baño caliente"));
         items.add(new Item("Joan",new Date(),0,"Necesita un baño de agua fría"));
         items.add(new Item("Joan pepe",new Date(),0,"Necesita un baño de agua fría"));
@@ -133,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    //Creamos un Intent que nos llevará a la pantalla para crear una nueva notificación: Paso 1
     public void onClickAdd(View view) {
         Intent intent = new Intent(this, AddActivity.class);
         Date date_default = new Date();
@@ -142,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Creamos un Intent que nos llevará a la pantalla para editar la notificación junto con los parámetros que queremos editar: Paso 1
     public void onClickItem(int pos ) {
         Toast.makeText(this, "Has clicado el item " + pos, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, AddActivity.class);
@@ -170,10 +152,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
+    //Paso4: refrescamos la pantalla
     public void onActivityResult ( int requestCode, int resultCode, Intent data){
         switch(requestCode){
+            //refrescamos la pantalla  de la lista de notificaciones con la nueva notificación
             case NEW_NOTIFICATION:
+
                 if(resultCode == RESULT_OK){
                     String titulo = data.getStringExtra("titulo");
                     Date fecha = (Date) data.getSerializableExtra("fecha");
@@ -181,25 +165,24 @@ public class MainActivity extends AppCompatActivity {
 
                     items.add(new Item(titulo,fecha, 0, descr));
                     adapter.notifyItemInserted(items.size()-1);
-                    }
+                }
 
                 break;
-
+            //refrescamos la pantalla  de la lista de notificaciones con los nuevos valores editados
             case EDIT_NOTIFICATION:
 
-                    if(resultCode == RESULT_OK){
+                if(resultCode == RESULT_OK){
 
-                     // Refrescamos la pantalla
 
-                     String title = data.getStringExtra("titulo");
-                     Date fecha = (Date) data.getSerializableExtra("fecha");
-                     String descr =  data.getStringExtra("descripcion");
-                     int pos = data.getIntExtra("posicion",0);
+                    String title = data.getStringExtra("titulo");
+                    Date fecha = (Date) data.getSerializableExtra("fecha");
+                    String descr =  data.getStringExtra("descripcion");
+                    int pos = data.getIntExtra("posicion",0);
 
                     items.set(pos,new Item(title,fecha,0,descr));
                     adapter.notifyItemChanged(pos);
                 }
-
+                //Eliminamos item
                 else if(resultCode == RESULT_OK*2) {
                     int pos = data.getIntExtra("posicion",0);
                     items.remove(pos);

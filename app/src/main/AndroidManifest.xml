@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.saracruz.alertnotification">
 
-    <uses-permission android:name="com.android.permission.SET_ALARM"/>
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
 
     <application
         android:allowBackup="true"
@@ -18,9 +18,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddActivity" android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".AddActivity"
+            android:parentActivityName=".MainActivity" />
 
-        <receiver android:name=".AlarmReceiver"/>
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="true"/>
+
+
+
     </application>
 
 </manifest>

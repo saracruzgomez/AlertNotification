@@ -3,41 +3,30 @@ package com.example.saracruz.alertnotification;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.support.v4.app.DialogFragment;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.DateFormat;
-import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.time.Clock;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
 
 
 public class AddActivity extends AppCompatActivity {
@@ -49,14 +38,67 @@ public class AddActivity extends AppCompatActivity {
     //private Date editfecha;
     private Date fecha;
     private int pos_i;
-    private TextView stateview;
+
+    private DatePickerDialog datePickerDialog;
+    private TimePickerDialog timePickerDialog;
+
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_layout);
 
+        findViewById(R.id.hora);
+        findViewById(R.id.fecha);
+
+        findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelAlarm();
+            }
+        });
+
+
+
         setTitle("QueMeAvisesJoder");
+        findViewById(R.id.btn_set).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar c =  Calendar.getInstance();
+
+                if(Build.VERSION.SDK_INT >= 23) {
+                    c.set(
+
+                            c.get(Calendar.YEAR),
+                            c.get(Calendar.MONTH),
+                            c.get(Calendar.DAY_OF_MONTH),
+                            c.get(Calendar.HOUR),
+                            c.get(Calendar.MINUTE),
+                           0
+                           // fecha.getTime(),
+
+
+
+                    );
+                }else{
+                    c.set(
+                            c.get(Calendar.YEAR),
+                            c.get(Calendar.MONTH),
+                            c.get(Calendar.DAY_OF_MONTH),
+                            c.get(Calendar.HOUR),
+                            c.get(Calendar.MINUTE),
+                            0
+                            //fecha.getTime();
+
+
+                    );
+
+
+
+                }
+                startalarm(c.getTimeInMillis());
+            }
+        });
 
         Intent intent = getIntent();
         if(intent != null) {
@@ -80,6 +122,22 @@ public class AddActivity extends AppCompatActivity {
         }
 
 
+
+
+
+    }
+
+    private void startalarm(long timeInMillis) {
+        Toast.makeText(this, "He entrado", Toast.LENGTH_SHORT).show();
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this,AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeInMillis,
+                AlarmManager.INTERVAL_DAY, pendingIntent);
+        boolean isNotifyactive = true;
+
+
+        Toast.makeText(this, "Alarm is set!!", Toast.LENGTH_SHORT).show();
     }
 
     public void setSupportActionBar(){
@@ -89,20 +147,11 @@ public class AddActivity extends AppCompatActivity {
             actionBar.setTitle("AddNotification");
         }
     }
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void onClickActivar(View view){
-        startalarm(fecha);
-        stateview.setText("Activada");
-    }
 
-    public void onClickDesactivar(View view){
-        cancelAlarm();
-        stateview.setText("Desactivada");
-    }
 
     public void onClickfecha(View view) {
 
-        DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+        datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 Toast.makeText(AddActivity.this, "Has cambiado la fecha...", Toast.LENGTH_SHORT).show();
@@ -110,16 +159,17 @@ public class AddActivity extends AppCompatActivity {
                 SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
                 String date = formatDate.format(fecha);
                 fecha_view.setText(date);
+
             }
         }, 2018, 12, 10);
 
-        dialog.show();
+        datePickerDialog.show();
     }
 
 
     public void onClickhora(View view) {
 
-        TimePickerDialog dialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+        timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 Toast.makeText(AddActivity.this,"Has cambiado la hora...", Toast.LENGTH_SHORT).show();
@@ -130,7 +180,7 @@ public class AddActivity extends AppCompatActivity {
             }
         }, 13, 18,true);
 
-        dialog.show();
+        timePickerDialog.show();
 
 
 
@@ -182,30 +232,18 @@ public class AddActivity extends AppCompatActivity {
         String timeText = "Alarm set for: ";
         timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
 
-        stateview.setText(timeText);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void startalarm(Date fecha){
-
-        Calendar c = new GregorianCalendar();
-        c.setTime(fecha);
-        Intent intent = new Intent(this,AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 10,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
-
 
     }
+
+
 
     private  void cancelAlarm(){
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this,AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1,intent,0);
-
-        alarmManager.cancel(pendingIntent);
-        stateview.setText("Alarm canceled");
+        //AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        //Intent intent = new Intent(this,AlarmReceiver.class);
+        //PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1,intent,0);
+        Toast.makeText(this, "ALARM IS DESACTIVATED", Toast.LENGTH_SHORT).show();
+        //alarmManager.cancel(pendingIntent);
+        //stateview.setText("Alarm canceled");
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu){

@@ -139,7 +139,7 @@ public class AddActivity extends AppCompatActivity {
     }
 
     private void startalarm(long timeInMillis) {
-        Toast.makeText(this, "He entrado", Toast.LENGTH_SHORT).show();
+        
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this,AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,intent,PendingIntent.FLAG_UPDATE_CURRENT);

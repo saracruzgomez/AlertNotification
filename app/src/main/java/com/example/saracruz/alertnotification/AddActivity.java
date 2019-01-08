@@ -38,7 +38,7 @@ public class AddActivity extends AppCompatActivity {
     //private Date editfecha;
     private Date fecha;
     private int pos_i;
-
+    private TextView stateview;
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog timePickerDialog;
 
@@ -48,8 +48,7 @@ public class AddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_layout);
 
-        findViewById(R.id.hora);
-        findViewById(R.id.fecha);
+
 
         findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,26 +68,27 @@ public class AddActivity extends AppCompatActivity {
                 if(Build.VERSION.SDK_INT >= 23) {
                     c.set(
 
-                            c.get(Calendar.YEAR),
-                            c.get(Calendar.MONTH),
-                            c.get(Calendar.DAY_OF_MONTH),
-                            c.get(Calendar.HOUR),
-                            c.get(Calendar.MINUTE),
-                           0
-                           // fecha.getTime(),
+                            datePickerDialog.getDatePicker().getYear(),
+                            datePickerDialog.getDatePicker().getMonth(),
+                            datePickerDialog.getDatePicker().getDayOfMonth(),
+                            fecha.getHours(),
+                            fecha.getMinutes(),0
+                            
+
+
 
 
 
                     );
                 }else{
                     c.set(
-                            c.get(Calendar.YEAR),
-                            c.get(Calendar.MONTH),
-                            c.get(Calendar.DAY_OF_MONTH),
-                            c.get(Calendar.HOUR),
-                            c.get(Calendar.MINUTE),
-                            0
-                            //fecha.getTime();
+                            datePickerDialog.getDatePicker().getYear(),
+                            datePickerDialog.getDatePicker().getMonth(),
+                            datePickerDialog.getDatePicker().getDayOfMonth(),
+                            fecha.getHours(),
+                            fecha.getMinutes(),0
+
+
 
 
                     );
@@ -128,7 +128,7 @@ public class AddActivity extends AppCompatActivity {
     }
 
     private void startalarm(long timeInMillis) {
-        Toast.makeText(this, "He entrado", Toast.LENGTH_SHORT).show();
+
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this,AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
@@ -232,7 +232,7 @@ public class AddActivity extends AppCompatActivity {
         String timeText = "Alarm set for: ";
         timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
 
-
+        stateview.setText(timeText);
     }
 
 

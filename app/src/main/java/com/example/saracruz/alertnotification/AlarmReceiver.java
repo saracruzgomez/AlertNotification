@@ -22,23 +22,22 @@ import java.util.Date;
 public class AlarmReceiver extends BroadcastReceiver {
 
 
-Date fecha;
 
-    private NotificationManager notificationManager;
-    boolean isNotificactive;
+
+
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        MediaPlayer mediaPlayer = MediaPlayer.create(context,
-                Settings.System.DEFAULT_RINGTONE_URI);
-        mediaPlayer.start();
 
 
-        Intent notificationIntent = new Intent(context, AddActivity.class);
+        Intent notificationIntent = new Intent(context, AlarmReceiver.class);
+
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        NotificationCompat.Builder mBuilder=
 
-        builder.setAutoCancel(true) //Cuando se pulsa la notificación, ésta  desaparece
+         new NotificationCompat.Builder(context)
+
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.ic_notificacion)
@@ -46,15 +45,15 @@ Date fecha;
                 .setContentText("THIS IS MY ALARM")
                 .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
                 .setContentInfo("Info")
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_notificacion))
-                .setTicker("" );
+                .setTicker("" )
+                .setAutoCancel(true);
 
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(100,mBuilder.build());
 
-        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(100,builder.build());
-
-        isNotificactive = true;
-
+        MediaPlayer mediaPlayer = MediaPlayer.create(context,
+                Settings.System.DEFAULT_RINGTONE_URI);
+        mediaPlayer.start();
 
 
 

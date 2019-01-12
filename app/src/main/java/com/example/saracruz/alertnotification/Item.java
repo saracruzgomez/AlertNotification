@@ -11,6 +11,7 @@ public class Item {
     private Date fecha;
 
 
+
     private int tipo;
 
 
@@ -21,6 +22,7 @@ public class Item {
         this.tipo = image;
         this.fecha = fecha;
         this.descr = descr;
+
     }
 
     public int getTipo() {

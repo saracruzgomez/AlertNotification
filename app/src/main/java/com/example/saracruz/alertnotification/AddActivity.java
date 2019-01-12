@@ -35,7 +35,6 @@ public class AddActivity extends AppCompatActivity {
     private EditText descripcio_noti;
     private TextView fecha_view;
     private TextView hora_view;
-    //private Date editfecha;
     private Date fecha;
     private int pos_i;
     private TextView stateview;
@@ -47,58 +46,6 @@ public class AddActivity extends AppCompatActivity {
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_layout);
-
-
-
-        findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cancelAlarm();
-            }
-        });
-
-
-
-        setTitle("QueMeAvisesJoder");
-        findViewById(R.id.btn_set).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar c =  Calendar.getInstance();
-
-                if(Build.VERSION.SDK_INT >= 23) {
-                    c.set(
-
-                            datePickerDialog.getDatePicker().getYear(),
-                            datePickerDialog.getDatePicker().getMonth(),
-                            datePickerDialog.getDatePicker().getDayOfMonth(),
-                            fecha.getHours(),
-                            fecha.getMinutes(),0
-                            
-
-
-
-
-
-                    );
-                }else{
-                    c.set(
-                            datePickerDialog.getDatePicker().getYear(),
-                            datePickerDialog.getDatePicker().getMonth(),
-                            datePickerDialog.getDatePicker().getDayOfMonth(),
-                            fecha.getHours(),
-                            fecha.getMinutes(),0
-
-
-
-
-                    );
-
-
-
-                }
-                startalarm(c.getTimeInMillis());
-            }
-        });
 
         Intent intent = getIntent();
         if(intent != null) {
@@ -117,9 +64,56 @@ public class AddActivity extends AppCompatActivity {
 
             fecha_view = findViewById(R.id.fechaview);
             hora_view = findViewById(R.id.horaview);
-
+            stateview = findViewById(R.id.StateView);
             pos_i=pos;
+
+            SimpleDateFormat formatHour = new SimpleDateFormat("HH:mm");
+            String hora = formatHour.format(fecha);
+            hora_view.setText(hora);
+            SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
+            String date = formatDate.format(fecha);
+            fecha_view.setText(date);
         }
+
+
+        findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelAlarm();
+            }
+        });
+
+
+
+        setTitle("QueMeAvisesJoder");
+        findViewById(R.id.btn_set).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar c =  Calendar.getInstance();
+
+                if(Build.VERSION.SDK_INT >= 23) {
+                    c.setTime(fecha);
+                }
+                else{
+                    c.set(
+                            datePickerDialog.getDatePicker().getYear(),
+                            datePickerDialog.getDatePicker().getMonth(),
+                            datePickerDialog.getDatePicker().getDayOfMonth(),
+                            fecha.getHours(),
+                            fecha.getMinutes(),0
+
+                    );
+
+
+
+                }
+
+                    startalarm(c.getTimeInMillis());
+
+            }
+        });
+
+
 
 
 
@@ -131,14 +125,25 @@ public class AddActivity extends AppCompatActivity {
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this,AlarmReceiver.class);
+        intent.putExtra("activa",true);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeInMillis,
                 AlarmManager.INTERVAL_DAY, pendingIntent);
         boolean isNotifyactive = true;
 
-
-        Toast.makeText(this, "Alarm is set!!", Toast.LENGTH_SHORT).show();
+        stateview.setText("Alarma Activada");
+        Toast.makeText(this, "Alarma Activada", Toast.LENGTH_SHORT).show();
     }
+    private  void cancelAlarm(){
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this,AlarmReceiver.class);
+        intent.putExtra("activa",false);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,intent,0);
+        Toast.makeText(this, "Alarma Desactivada", Toast.LENGTH_SHORT).show();
+        alarmManager.cancel(pendingIntent);
+        stateview.setText("Alarma Desactivada");
+    }
+
 
     public void setSupportActionBar(){
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -170,6 +175,7 @@ public class AddActivity extends AppCompatActivity {
     public void onClickhora(View view) {
 
         timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 Toast.makeText(AddActivity.this,"Has cambiado la hora...", Toast.LENGTH_SHORT).show();
@@ -178,7 +184,7 @@ public class AddActivity extends AppCompatActivity {
                 String hora = formatHour.format(fecha);
                 hora_view.setText(hora);
             }
-        }, 13, 18,true);
+        },00, 00,true);
 
         timePickerDialog.show();
 
@@ -224,27 +230,6 @@ public class AddActivity extends AppCompatActivity {
 
 
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-
-
-    private void updateTimeText(Calendar c){
-        String timeText = "Alarm set for: ";
-        timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
-
-        stateview.setText(timeText);
-    }
-
-
-
-    private  void cancelAlarm(){
-        //AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        //Intent intent = new Intent(this,AlarmReceiver.class);
-        //PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1,intent,0);
-        Toast.makeText(this, "ALARM IS DESACTIVATED", Toast.LENGTH_SHORT).show();
-        //alarmManager.cancel(pendingIntent);
-        //stateview.setText("Alarm canceled");
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();

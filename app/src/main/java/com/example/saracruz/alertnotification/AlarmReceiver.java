@@ -22,10 +22,14 @@ Date fecha;
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        boolean activa = intent.getBooleanExtra("activa",true);
         MediaPlayer mediaPlayer = MediaPlayer.create(context,
                 Settings.System.DEFAULT_RINGTONE_URI);
         mediaPlayer.start();
 
+        if(mediaPlayer!=null && activa!= true){
+            mediaPlayer.release();
+        }
 
         Intent notificationIntent = new Intent(context, AddActivity.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

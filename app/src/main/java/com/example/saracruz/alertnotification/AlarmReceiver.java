@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.Date;
 
@@ -25,9 +27,16 @@ Date fecha;
         boolean activa = intent.getBooleanExtra("activa",true);
         MediaPlayer mediaPlayer = MediaPlayer.create(context,
                 Settings.System.DEFAULT_RINGTONE_URI);
+        if(mediaPlayer.isPlaying()){
+            mediaPlayer.stop();
+        }
         mediaPlayer.start();
 
+
         if(mediaPlayer!=null && activa!= true){
+            if(mediaPlayer.isPlaying()){
+                mediaPlayer.stop();
+            }
             mediaPlayer.release();
         }
 

@@ -39,7 +39,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         boolean activa = intent.getBooleanExtra("activa", true);
         MediaPlayer mediaPlayer = MediaPlayer.create(context,
                 Settings.System.DEFAULT_RINGTONE_URI);
-                notificationcall(context);
+                //notificationcall(context);
         mediaPlayer.start();
 
 
@@ -52,9 +52,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
 
-    }
+    }}
 
-    @TargetApi(Build.VERSION_CODES.O)
+   /* @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void createChannels() {
         NotificationChannel notiChannel = new NotificationChannel(ANOTIF_CHANNEL_ID, ANOTIF_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
@@ -94,6 +94,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
         return manager;
     }
+
+
 }
 
    /* Intent notificationIntent = new Intent(context, AddActivity.class);

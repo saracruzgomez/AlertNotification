@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             FileOutputStream outputStream = openFileOutput("items_noti.txt", MODE_PRIVATE);
             //for (int i = 0; i < items.size(); i++) {
             for (Item item : items) {
-                String line = String.format("%s,%D,%s,%s", item.getTitle(), item.getDay(), item.getTipo(),item.getDescr());
+                String line = String.format("%s,%s,%s,%s", item.getTitle(), item.getDay(), item.getTipo(),item.getDescr());
                 outputStream.write(line.getBytes());
             }
         } catch (FileNotFoundException e) {
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        //  saveItemList();
+        saveItemList();
     }
 
     @Override
